@@ -11,5 +11,7 @@ namespace SADAssessment.Library
 
         public void Add(Book book);
 
+        public void Remove(Book book);
+
     }
 }

@@ -15,21 +15,24 @@ namespace SADAssessment.Library
                 _library = new VirtualLibrary();
             return _library;
         }
-
-
         private static VirtualLibrary  _library;
 
         // Book storage
-        private BlockingCollection<Book> _bookshelf = new BlockingCollection<Book>();
+        private ConcurrentDictionary<string, Book> _bookshelf = new ConcurrentDictionary<string, Book>();
 
         public List<Book> List()
         {
-            return _bookshelf.ToList();
+            return _bookshelf.Values.ToList();
         }
 
         public void Add(Book book)
         {
-            _bookshelf.Add(book);
+            _bookshelf.GetOrAdd($"{book.Author}:{book.Title}", book);
+        }
+
+        public void Remove(Book book)
+        {
+            _bookshelf.TryRemove($"{book.Author}:{book.Title}", out Book _);
         }
 
     }

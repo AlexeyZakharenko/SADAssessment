@@ -11,6 +11,8 @@ namespace SADAssessment.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
+        // Get library instance to work
+        // There is only one point to select library type
         ILibrary _library = VirtualLibrary.Get();
 
 
@@ -21,19 +23,48 @@ namespace SADAssessment.Controllers
         }
 
         [HttpGet("add")]
-        [Authorize]
+        [Authorize("add:book")]
         public IActionResult Add([FromQuery] string author, [FromQuery] string title)
         {
-            _library.Add(new Book(author, title));
-            return Ok(new
+            if (!string.IsNullOrWhiteSpace(author) && !string.IsNullOrWhiteSpace(title))
             {
-                Message = $"Book {author} / {title} has been added"
-            });
+                _library.Add(new Book(author, title));
+                return Ok(new
+                {
+                    Message = $"Book {author} / {title} has been added"
+                });
+            }
+            else
+                return BadRequest(new
+                {
+                    Message = "Invalid parameters"
+                });
         }
 
 
-        // This is a helper action. It allows you to easily view all the claims of the token.
-        [HttpGet("whoami")]
+        [HttpGet("deleteByAuthor")]
+        [Authorize("delete:book")]
+        public IActionResult DeleteByAuthor([FromQuery] string author)
+        {
+            if (!string.IsNullOrWhiteSpace(author))
+            {
+                foreach (var book in _library.List().Where(b => author.Equals(b.Author)))
+                    _library.Remove(book);
+
+                return Ok(new
+                {
+                    Message = $"Remove all books of {author}"
+                });
+            }
+            else
+                return BadRequest(new
+                {
+                    Message = "Invalid parameters"
+                });
+        }
+
+        [HttpGet("claims")]
+        [Authorize]
         public IActionResult Claims()
         {
             return Ok(User.Claims.Select(c =>

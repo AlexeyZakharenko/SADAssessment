@@ -32,7 +32,8 @@ namespace SADAssessment
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("read:messages", policy => policy.Requirements.Add(new HasScopeRequirement("read:messages", domain)));
+                options.AddPolicy("add:book", policy => policy.Requirements.Add(new HasScopeRequirement("add:book", domain)));
+                options.AddPolicy("delete:book", policy => policy.Requirements.Add(new HasScopeRequirement("delete:book", domain)));
             });
 
             services.AddControllers();

@@ -8,6 +8,7 @@ namespace SADAssessment.Library
 {
     public class Book
     {
+       
         public string Author { get; private set; }
         public string Title { get; private set; }
 
