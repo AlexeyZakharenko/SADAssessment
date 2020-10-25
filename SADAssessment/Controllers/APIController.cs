@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 using SADAssessment.Library;
 
 
@@ -20,6 +19,18 @@ namespace SADAssessment.Controllers
         public IActionResult List()
         {
             return Ok(_library.List());
+        }
+
+        [HttpGet("claims")]
+        [Authorize]
+        public IActionResult Claims()
+        {
+            return Ok(User.Claims.Select(c =>
+                new
+                {
+                    c.Type,
+                    c.Value
+                }));
         }
 
         [HttpGet("add")]
@@ -63,16 +74,5 @@ namespace SADAssessment.Controllers
                 });
         }
 
-        [HttpGet("claims")]
-        [Authorize]
-        public IActionResult Claims()
-        {
-            return Ok(User.Claims.Select(c =>
-                new
-                {
-                    c.Type,
-                    c.Value
-                }));
-        }
     }
 }
